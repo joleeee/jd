@@ -19,13 +19,11 @@ fn main() {
     stdin.read_exact(&mut bheight).unwrap();
     let width = u32::from_be_bytes(bwidth) as usize;
     let height = u32::from_be_bytes(bheight) as usize;
-    eprintln!("W {:?}, H {:?}", width, height);
 
     let args: Vec<String> = env::args().collect();
     let pal: Vec<Color>;
     match args.get(1) {
         Some(filename) => {
-            eprintln!("Palette {:?}", filename);
             pal = read_pal(filename);
         },
         None => {
