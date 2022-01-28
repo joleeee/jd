@@ -1,4 +1,4 @@
-use std::{env, io::{self, Read, Write}, fs::File};
+use std::{env, io::{self, Read, Write}, fs::File, ops::{Div, AddAssign, Mul, Sub}};
 
 const HEADER: [u8; 8] = [102, 97, 114, 98, 102, 101, 108, 100];
 
@@ -32,18 +32,15 @@ fn main() {
         None => {
             let max = u16::MAX as i32;
             pal = vec![
-                Color{r: 0,   g: 0,   b: 0  },
-                Color{r: max, g: max, b: max},
-                Color{r: max, g: 0  , b: 0  },
-                Color{r: 0  , g: max, b: 0  },
-                Color{r: 0  , g: 0  , b: max},
+                Color{r: 0,   g: 0,   b: 0   },
+                Color{r: max, g: max, b: max },
+                Color{r: max, g: 0,   b: 0   },
+                Color{r: 0,   g: max, b: 0   },
+                Color{r: 0,   g: 0,   b: max },
             ];
         },
     }
 
-    //let NOCOL = Color{r: 0, g: 0, b: 0};
-    //let mut arr = vec![vec![NOCOL; width as usize]; height as usize];
-    let a : Vec<Vec<Color>> = vec![vec![]];
     let mut data = vec![];
     let mut out = vec![];
     let mut raw = Vec::new();
@@ -54,10 +51,8 @@ fn main() {
             let r = u16::from_be_bytes(raw[ start   .. start+2 ].try_into().unwrap()) as i32;
             let g = u16::from_be_bytes(raw[ start+2 .. start+4 ].try_into().unwrap()) as i32;
             let b = u16::from_be_bytes(raw[ start+4 .. start+6 ].try_into().unwrap()) as i32;
-            // let a = ...
             let c = Color{r, g, b};
             data.push(c);
-            //arr[y][x] = arr;
         }
     }
 
@@ -66,30 +61,20 @@ fn main() {
             let i = (y*width + x) as usize;
             let color = &data[i];
             let closest = closest_color(&pal, &color);
-            let diff = Color{
-                r: color.r - closest.r,
-                g: color.g - closest.g,
-                b: color.b - closest.b,
-            };
+            let diff = *color - *closest;
+
             if x < width - 1 {
-                data[i+1].r += 7 * diff.r / 16;
-                data[i+1].g += 7 * diff.g / 16;
-                data[i+1].b += 7 * diff.b / 16;
+                data[i+1] += (diff * 7) / 16;
             }
+
             if y < height - 1 {
                 if x < width - 1 {
-                    data[i+width+1].r += diff.r / 16;
-                    data[i+width+1].g += diff.g / 16;
-                    data[i+width+1].b += diff.b / 16;
+                    data[i+width+1] += diff / 16;
                 }
                 if x > 0 {
-                    data[i+width-1].r += 3 * diff.r / 16;
-                    data[i+width-1].g += 3 * diff.g / 16;
-                    data[i+width-1].b += 3 * diff.b / 16;
+                    data[i+width-1] += (diff * 3) / 16;
                 }
-                data[i+width].r += 5 * diff.r / 16;
-                data[i+width].g += 5 * diff.g / 16;
-                data[i+width].b += 5 * diff.b / 16;
+                data[i+width] += (diff * 5) / 16;
             }
 
             out.push(closest);
@@ -136,10 +121,52 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
     return best_col;
 }
 
+#[derive(Clone, Copy)]
 struct Color {
     r: i32,
     g: i32,
     b: i32,
+}
+
+impl Div<i32> for Color {
+    type Output = Self;
+    fn div(self, rhs: i32) -> Self::Output {
+        Color {
+            r: self.r / rhs,
+            g: self.g / rhs,
+            b: self.b / rhs,
+        }
+    }
+}
+
+impl AddAssign for Color {
+    fn add_assign(&mut self, rhs: Self) {
+        self.r += rhs.r;
+        self.g += rhs.g;
+        self.b += rhs.b;
+    }
+}
+
+impl Mul<i32> for Color {
+    type Output = Self;
+    fn mul(self, rhs: i32) -> Self::Output {
+        Color {
+            r: self.r * rhs,
+            g: self.g * rhs,
+            b: self.b * rhs,
+        }
+    }
+}
+
+impl Sub for Color {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Color {
+            r: self.r - rhs.r,
+            g: self.g - rhs.g,
+            b: self.b - rhs.b,
+        }
+    }
 }
 
 fn read_pal(filename: &String) -> Vec<Color> {
