@@ -1,4 +1,4 @@
-use std::{env, io::{self, Read, Write}, fs::File, ops::{Div, AddAssign, Mul, Sub}};
+use std::{env, io::{self, Read, Write}, fs::File, ops::{Div, AddAssign, Mul, Sub}, process::exit};
 
 const HEADER: [u8; 8] = [102, 97, 114, 98, 102, 101, 108, 100];
 
@@ -8,10 +8,9 @@ fn main() {
 
     stdin.read_exact(&mut buffer).unwrap();
 
-    eprintln!("Header: {:?}", buffer);
     if buffer != HEADER {
         eprintln!("Wrong header!");
-        return;
+        exit(1);
     }
 
     let mut bwidth = [0; 4];
