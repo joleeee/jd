@@ -1,4 +1,4 @@
-use std::{env, io::{self, Read, Write}, fs::File, ops::{Div, AddAssign, Mul, Sub}, process::exit};
+use std::{env, io::{self, Read, Write, BufWriter}, fs::File, ops::{Div, AddAssign, Mul, Sub}, process::exit};
 
 const HEADER: [u8; 8] = [102, 97, 114, 98, 102, 101, 108, 100];
 
@@ -80,7 +80,7 @@ fn main() {
         }
     }
 
-    let mut stdout = io::stdout();
+    let mut stdout = BufWriter::new(io::stdout());
     stdout.write(&HEADER).unwrap();
     let ne_width = (width as u32).to_be_bytes();
     let ne_height = (height as u32).to_be_bytes();
