@@ -107,9 +107,10 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
     let mut best_col = &pal[0];
     for col in pal {
         let rmean = (src.r + col.r) as f64;
-        let dr = (src.r - col.r).abs() as f64;
-        let dg = (src.g - col.g).abs() as f64;
-        let db = (src.b - col.b).abs() as f64;
+        let diff = *src - *col;
+        let dr = diff.r.abs() as f64;
+        let dg = diff.g.abs() as f64;
+        let db = diff.b.abs() as f64;
 
         let max16 = u16::MAX as f64;
         let diff = (( 512 as f64 + rmean/max16)*dr*dr + (1024 as f64)*dg*dg + (512 as f64 + (max16-(1 as f64)-rmean)/max16)*db*db).sqrt();
@@ -126,21 +127,18 @@ fn read_pal(filename: &String) -> Vec<Color> {
     let mut buf = String::new();
     let mut f = File::open(filename).unwrap();
 
-    let _len = f.read_to_string(&mut buf).unwrap();
+    f.read_to_string(&mut buf).unwrap();
 
-    //let mul = u16::MAX as i32;
     let mul = (u8::MAX as i32)+1;
-    eprintln!("AAAA {}", mul);
 
     let mut pal = vec![];
     for line in buf.lines() {
-        //eprintln!("line {}", line);
         let rcol = hex::decode(line).unwrap();
         let col = Color{
-            r: rcol[0] as i32 * mul,
-            g: rcol[1] as i32 * mul,
-            b: rcol[2] as i32 * mul,
-        };
+            r: rcol[0] as i32,
+            g: rcol[1] as i32,
+            b: rcol[2] as i32,
+        } * mul;
         pal.push(col);
     }
     return pal;
