@@ -1,4 +1,8 @@
-use std::{env, io::{self, Read, Write, BufWriter}, fs::File, ops::{Div, AddAssign, Mul, Sub}, process::exit};
+use std::{env, io::{self, Read, Write, BufWriter}, fs::File, process::exit};
+
+use color::Color;
+
+mod color;
 
 const HEADER: [u8; 8] = [102, 97, 114, 98, 102, 101, 108, 100];
 
@@ -116,54 +120,6 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
     }
 
     return best_col;
-}
-
-#[derive(Clone, Copy)]
-struct Color {
-    r: i32,
-    g: i32,
-    b: i32,
-}
-
-impl Div<i32> for Color {
-    type Output = Self;
-    fn div(self, rhs: i32) -> Self::Output {
-        Color {
-            r: self.r / rhs,
-            g: self.g / rhs,
-            b: self.b / rhs,
-        }
-    }
-}
-
-impl AddAssign for Color {
-    fn add_assign(&mut self, rhs: Self) {
-        self.r += rhs.r;
-        self.g += rhs.g;
-        self.b += rhs.b;
-    }
-}
-
-impl Mul<i32> for Color {
-    type Output = Self;
-    fn mul(self, rhs: i32) -> Self::Output {
-        Color {
-            r: self.r * rhs,
-            g: self.g * rhs,
-            b: self.b * rhs,
-        }
-    }
-}
-
-impl Sub for Color {
-    type Output = Self;
-    fn sub(self, rhs: Self) -> Self::Output {
-        Color {
-            r: self.r - rhs.r,
-            g: self.g - rhs.g,
-            b: self.b - rhs.b,
-        }
-    }
 }
 
 fn read_pal(filename: &String) -> Vec<Color> {
