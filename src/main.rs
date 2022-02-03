@@ -98,8 +98,6 @@ fn main() {
         stdout.write(&b).unwrap();
         stdout.write(&a).unwrap();
     }
-
-    return;
 }
 
 fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
@@ -120,7 +118,7 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
         }
     }
 
-    return best_col;
+    best_col
 }
 
 fn read_pal(filename: &String) -> Vec<Color> {
@@ -141,6 +139,7 @@ fn read_pal(filename: &String) -> Vec<Color> {
         } * mul;
         pal.push(col);
     }
-    return pal;
+
+    pal
 }
 
