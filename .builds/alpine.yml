@@ -1,0 +1,10 @@
+image: alpine/edge
+packages:
+  - rustup
+tasks:
+  - setup: |
+      rustup-init --profile default -y
+  - build: |
+      source $HOME/.cargo/env
+      cd jd-rs
+      cargo build

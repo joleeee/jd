@@ -1,0 +1,9 @@
+image: archlinux
+packages:
+  - rustup
+tasks:
+  - setup: |
+      rustup toolchain install stable
+  - build: |
+      cd jd-rs
+      cargo build
