@@ -1,6 +1,7 @@
 image: alpine/edge
 packages:
   - rustup
+  - farbfeld
 tasks:
   - setup: |
       rustup-init --profile default -y
@@ -8,3 +9,7 @@ tasks:
       source $HOME/.cargo/env
       cd jd-rs
       cargo build
+  - test: |
+      source $HOME/.cargo/env
+      cd jd-rs
+      cargo test -v

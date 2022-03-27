@@ -1,9 +1,17 @@
 image: archlinux
+sources:
+  - https://git.suckless.org/farbfeld
 packages:
   - rustup
+  - libpng
+  - libjpeg-turbo
 tasks:
   - setup: |
       rustup toolchain install stable
+      cd farbfeld && sudo make install
   - build: |
       cd jd-rs
       cargo build
+  - test: |
+      cd jd-rs
+      cargo test -v
