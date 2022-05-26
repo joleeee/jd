@@ -79,20 +79,20 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
         }
     }
 
-    stdout.write(&HEADER).unwrap();
+    stdout.write_all(&HEADER).unwrap();
     let ne_width = (width as u32).to_be_bytes();
     let ne_height = (height as u32).to_be_bytes();
-    stdout.write(&ne_width).unwrap();
-    stdout.write(&ne_height).unwrap();
+    stdout.write_all(&ne_width).unwrap();
+    stdout.write_all(&ne_height).unwrap();
     for v in out {
         let r = (v.r as u16).to_be_bytes();
         let g = (v.g as u16).to_be_bytes();
         let b = (v.b as u16).to_be_bytes();
         let a = u16::MAX.to_be_bytes();
-        stdout.write(&r).unwrap();
-        stdout.write(&g).unwrap();
-        stdout.write(&b).unwrap();
-        stdout.write(&a).unwrap();
+        stdout.write_all(&r).unwrap();
+        stdout.write_all(&g).unwrap();
+        stdout.write_all(&b).unwrap();
+        stdout.write_all(&a).unwrap();
     }
 }
 
