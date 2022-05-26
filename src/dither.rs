@@ -120,7 +120,7 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
     best_col
 }
 
-fn read_pal(filename: &String) -> Vec<Color> {
+fn read_pal(filename: &str) -> Vec<Color> {
     let mut buf = String::new();
     let mut f = File::open(filename).unwrap();
 
@@ -128,16 +128,18 @@ fn read_pal(filename: &String) -> Vec<Color> {
 
     let mul = (u8::MAX as i32) + 1;
 
-    let mut pal = vec![];
-    for line in buf.lines() {
-        let rcol = hex::decode(line).unwrap();
-        let col = Color {
-            r: rcol[0] as i32,
-            g: rcol[1] as i32,
-            b: rcol[2] as i32,
-        } * mul;
-        pal.push(col);
-    }
+    buf.lines()
+        .map(|line| {
+            let mut rcol = hex::decode(line)
+                .unwrap()
+                .into_iter()
+                .map(Into::<i32>::into);
 
-    pal
+            Color {
+                r: rcol.next().unwrap(),
+                g: rcol.next().unwrap(),
+                b: rcol.next().unwrap(),
+            } * mul
+        })
+        .collect()
 }
