@@ -1,4 +1,4 @@
-use std::{env, fs::File, process::exit, io::Read};
+use std::{env, fs::File, io::Read, process::exit};
 
 use crate::color::Color;
 
@@ -26,17 +26,21 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
     match args.get(1) {
         Some(filename) => {
             pal = read_pal(filename);
-        },
+        }
         None => {
             let max = u16::MAX as i32;
             pal = vec![
-                Color{r: 0,   g: 0,   b: 0   },
-                Color{r: max, g: max, b: max },
-                Color{r: max, g: 0,   b: 0   },
-                Color{r: 0,   g: max, b: 0   },
-                Color{r: 0,   g: 0,   b: max },
+                Color { r: 0, g: 0, b: 0 },
+                Color {
+                    r: max,
+                    g: max,
+                    b: max,
+                },
+                Color { r: max, g: 0, b: 0 },
+                Color { r: 0, g: max, b: 0 },
+                Color { r: 0, g: 0, b: max },
             ];
-        },
+        }
     }
 
     let mut data = vec![];
@@ -45,34 +49,34 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
     stdin.read_to_end(&mut raw).unwrap();
     for y in 0..height {
         for x in 0..width {
-            let start = ((y*width + x)*8) as usize;
-            let r = u16::from_be_bytes(raw[ start   .. start+2 ].try_into().unwrap()) as i32;
-            let g = u16::from_be_bytes(raw[ start+2 .. start+4 ].try_into().unwrap()) as i32;
-            let b = u16::from_be_bytes(raw[ start+4 .. start+6 ].try_into().unwrap()) as i32;
-            let c = Color{r, g, b};
+            let start = ((y * width + x) * 8) as usize;
+            let r = u16::from_be_bytes(raw[start..start + 2].try_into().unwrap()) as i32;
+            let g = u16::from_be_bytes(raw[start + 2..start + 4].try_into().unwrap()) as i32;
+            let b = u16::from_be_bytes(raw[start + 4..start + 6].try_into().unwrap()) as i32;
+            let c = Color { r, g, b };
             data.push(c);
         }
     }
 
     for y in 0..height {
         for x in 0..width {
-            let i = (y*width + x) as usize;
+            let i = (y * width + x) as usize;
             let color = &data[i];
             let closest = closest_color(&pal, &color);
             let diff = *color - *closest;
 
             if x < width - 1 {
-                data[i+1] += (diff * 7) / 16;
+                data[i + 1] += (diff * 7) / 16;
             }
 
             if y < height - 1 {
                 if x < width - 1 {
-                    data[i+width+1] += diff / 16;
+                    data[i + width + 1] += diff / 16;
                 }
                 if x > 0 {
-                    data[i+width-1] += (diff * 3) / 16;
+                    data[i + width - 1] += (diff * 3) / 16;
                 }
-                data[i+width] += (diff * 5) / 16;
+                data[i + width] += (diff * 5) / 16;
             }
 
             out.push(closest);
@@ -107,7 +111,10 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
         let db = diff.b.abs() as f64;
 
         let max16 = u16::MAX as f64;
-        let diff = (( 512 as f64 + rmean/max16)*dr*dr + (1024 as f64)*dg*dg + (512 as f64 + (max16-(1 as f64)-rmean)/max16)*db*db).sqrt();
+        let diff = ((512 as f64 + rmean / max16) * dr * dr
+            + (1024 as f64) * dg * dg
+            + (512 as f64 + (max16 - (1 as f64) - rmean) / max16) * db * db)
+            .sqrt();
         if diff < best_diff {
             best_diff = diff;
             best_col = col;
@@ -123,12 +130,12 @@ fn read_pal(filename: &String) -> Vec<Color> {
 
     f.read_to_string(&mut buf).unwrap();
 
-    let mul = (u8::MAX as i32)+1;
+    let mul = (u8::MAX as i32) + 1;
 
     let mut pal = vec![];
     for line in buf.lines() {
         let rcol = hex::decode(line).unwrap();
-        let col = Color{
+        let col = Color {
             r: rcol[0] as i32,
             g: rcol[1] as i32,
             b: rcol[2] as i32,
@@ -138,4 +145,3 @@ fn read_pal(filename: &String) -> Vec<Color> {
 
     pal
 }
-

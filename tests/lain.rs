@@ -1,4 +1,8 @@
-use std::{process::Command, io::{Cursor, Read}, fs::File};
+use std::{
+    fs::File,
+    io::{Cursor, Read},
+    process::Command,
+};
 
 use jd::dither;
 
@@ -23,7 +27,10 @@ fn mem() {
     let ans_ff = Command::new("2ff").stdin(ans_png).output().unwrap().stdout;
 
     let mut out_ff = Vec::new();
-    File::open(ipath("lain_out.ff")).unwrap().read_to_end(&mut out_ff).unwrap();
-    
+    File::open(ipath("lain_out.ff"))
+        .unwrap()
+        .read_to_end(&mut out_ff)
+        .unwrap();
+
     assert_eq!(ans_ff, out_ff);
 }

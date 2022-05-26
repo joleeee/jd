@@ -1,4 +1,4 @@
-use std::ops::{Div, AddAssign, Mul, Sub};
+use std::ops::{AddAssign, Div, Mul, Sub};
 
 #[derive(Clone, Copy)]
 pub struct Color {
