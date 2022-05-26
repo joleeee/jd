@@ -21,7 +21,7 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
     let width = u32::from_be_bytes(bwidth) as usize;
     let height = u32::from_be_bytes(bheight) as usize;
 
-    let argument = env::args().skip(1).next();
+    let argument = env::args().nth(1);
     let pal = match argument {
         Some(filename) => read_pal(&filename),
         None => {
@@ -58,7 +58,7 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
         for x in 0..width {
             let i = (y * width + x) as usize;
             let color = &data[i];
-            let closest = closest_color(&pal, &color);
+            let closest = closest_color(&pal, color);
             let diff = *color - *closest;
 
             if x < width - 1 {
@@ -107,9 +107,9 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
         let db = diff.b.abs() as f64;
 
         let max16 = u16::MAX as f64;
-        let diff = ((512 as f64 + rmean / max16) * dr * dr
-            + (1024 as f64) * dg * dg
-            + (512 as f64 + (max16 - (1 as f64) - rmean) / max16) * db * db)
+        let diff = ((512.0 + rmean / max16) * dr * dr
+            + 1024.0 * dg * dg
+            + (512.0 + (max16 - 1.0 - rmean) / max16) * db * db)
             .sqrt();
         if diff < best_diff {
             best_diff = diff;
