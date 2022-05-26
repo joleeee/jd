@@ -40,20 +40,19 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
         }
     };
 
-    let mut data = vec![];
     let mut out = vec![];
     let mut raw = Vec::new();
     stdin.read_to_end(&mut raw).unwrap();
-    for y in 0..height {
-        for x in 0..width {
-            let start = ((y * width + x) * 8) as usize;
-            let r = u16::from_be_bytes(raw[start..start + 2].try_into().unwrap()) as i32;
-            let g = u16::from_be_bytes(raw[start + 2..start + 4].try_into().unwrap()) as i32;
-            let b = u16::from_be_bytes(raw[start + 4..start + 6].try_into().unwrap()) as i32;
-            let c = Color { r, g, b };
-            data.push(c);
-        }
-    }
+
+    let mut data: Vec<_> = raw
+        .chunks_exact(8)
+        .map(|pixel| {
+            let r = u16::from_be_bytes(pixel[0..2].try_into().unwrap()) as i32;
+            let g = u16::from_be_bytes(pixel[2..4].try_into().unwrap()) as i32;
+            let b = u16::from_be_bytes(pixel[4..6].try_into().unwrap()) as i32;
+            Color { r, g, b }
+        })
+        .collect();
 
     for y in 0..height {
         for x in 0..width {
