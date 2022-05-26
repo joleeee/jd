@@ -21,15 +21,12 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
     let width = u32::from_be_bytes(bwidth) as usize;
     let height = u32::from_be_bytes(bheight) as usize;
 
-    let args: Vec<String> = env::args().collect();
-    let pal: Vec<Color>;
-    match args.get(1) {
-        Some(filename) => {
-            pal = read_pal(filename);
-        }
+    let argument = env::args().skip(1).next();
+    let pal = match argument {
+        Some(filename) => read_pal(&filename),
         None => {
             let max = u16::MAX as i32;
-            pal = vec![
+            vec![
                 Color { r: 0, g: 0, b: 0 },
                 Color {
                     r: max,
@@ -39,9 +36,9 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
                 Color { r: max, g: 0, b: 0 },
                 Color { r: 0, g: max, b: 0 },
                 Color { r: 0, g: 0, b: max },
-            ];
+            ]
         }
-    }
+    };
 
     let mut data = vec![];
     let mut out = vec![];
