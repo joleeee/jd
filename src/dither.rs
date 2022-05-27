@@ -25,17 +25,17 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
     let pal = match argument {
         Some(filename) => read_pal(&filename),
         None => {
-            let max = u16::MAX as i32;
+            const MAX: i32 = u16::MAX as i32;
             vec![
                 Color { r: 0, g: 0, b: 0 },
                 Color {
-                    r: max,
-                    g: max,
-                    b: max,
+                    r: MAX,
+                    g: MAX,
+                    b: MAX,
                 },
-                Color { r: max, g: 0, b: 0 },
-                Color { r: 0, g: max, b: 0 },
-                Color { r: 0, g: 0, b: max },
+                Color { r: MAX, g: 0, b: 0 },
+                Color { r: 0, g: MAX, b: 0 },
+                Color { r: 0, g: 0, b: MAX },
             ]
         }
     };
@@ -106,10 +106,11 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
         let dg = diff.g.abs() as f64;
         let db = diff.b.abs() as f64;
 
-        let max16 = u16::MAX as f64;
-        let diff = ((512.0 + rmean / max16) * dr * dr
+        const MAX16: f64 = u16::MAX as f64;
+
+        let diff = ((512.0 + rmean / MAX16) * dr * dr
             + 1024.0 * dg * dg
-            + (512.0 + (max16 - 1.0 - rmean) / max16) * db * db)
+            + (512.0 + (MAX16 - 1.0 - rmean) / MAX16) * db * db)
             .sqrt();
         if diff < best_diff {
             best_diff = diff;
@@ -126,7 +127,7 @@ fn read_pal(filename: &str) -> Vec<Color> {
 
     f.read_to_string(&mut buf).unwrap();
 
-    let mul = (u8::MAX as i32) + 1;
+    const MUL: i32 = (u8::MAX as i32) + 1;
 
     buf.lines()
         .map(|line| {
@@ -139,7 +140,7 @@ fn read_pal(filename: &str) -> Vec<Color> {
                 r: rcol.next().unwrap(),
                 g: rcol.next().unwrap(),
                 b: rcol.next().unwrap(),
-            } * mul
+            } * MUL
         })
         .collect()
 }
