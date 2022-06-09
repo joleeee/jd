@@ -100,18 +100,8 @@ fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {
     let mut best_diff = f64::MAX;
     let mut best_col = &pal[0];
     for col in pal {
-        let rmean = (src.r + col.r) as f64;
-        let diff = *src - *col;
-        let dr = diff.r.abs() as f64;
-        let dg = diff.g.abs() as f64;
-        let db = diff.b.abs() as f64;
+        let diff = src.diff(col);
 
-        const MAX16: f64 = u16::MAX as f64;
-
-        let diff = ((512.0 + rmean / MAX16) * dr * dr
-            + 1024.0 * dg * dg
-            + (512.0 + (MAX16 - 1.0 - rmean) / MAX16) * db * db)
-            .sqrt();
         if diff < best_diff {
             best_diff = diff;
             best_col = col;
