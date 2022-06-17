@@ -2,9 +2,10 @@ pub mod color;
 pub mod ff;
 
 mod dither;
+use color::Palette;
 pub use dither::dither;
 
-use std::io;
+use std::{io, env::args};
 
 pub struct Image {
     width: u32,
@@ -13,7 +14,8 @@ pub struct Image {
 }
 
 pub fn dither_io<R: io::Read, W: io::Write>(stdin: &mut R, stdout: &mut W) {
+    let palette = Palette::from_args(args());
     let input = ff::decode(stdin).unwrap();
-    let output = dither(input);
+    let output = dither(input, &palette);
     ff::encode(&output, stdout);
 }

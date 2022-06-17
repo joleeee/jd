@@ -1,4 +1,9 @@
-use std::ops::{AddAssign, Div, Mul, Sub};
+use std::{
+    env::Args,
+    fs::File,
+    io::Read,
+    ops::{AddAssign, Div, Mul, Sub},
+};
 
 #[derive(Clone, Copy)]
 pub struct Color {
@@ -63,5 +68,72 @@ impl Color {
             + 1024.0 * dg * dg
             + (512.0 + (MAX16 - 1.0 - rmean) / MAX16) * db * db)
             .sqrt()
+    }
+}
+
+pub struct Palette {
+    colors: Vec<Color>,
+}
+
+impl Palette {
+    pub fn from_args(mut args: Args) -> Self {
+        let argument = args.nth(1);
+        let colors = match argument {
+            Some(filename) => Self::read_pal(&filename),
+            None => {
+                const MAX: i32 = u16::MAX as i32;
+                vec![
+                    Color { r: 0, g: 0, b: 0 },
+                    Color {
+                        r: MAX,
+                        g: MAX,
+                        b: MAX,
+                    },
+                    Color { r: MAX, g: 0, b: 0 },
+                    Color { r: 0, g: MAX, b: 0 },
+                    Color { r: 0, g: 0, b: MAX },
+                ]
+            }
+        };
+        Palette { colors }
+    }
+
+    pub fn closest_color<'a>(self: &'a Palette, src: &Color) -> &'a Color {
+        let mut best_diff = f64::MAX;
+        let mut best_col = &self.colors[0];
+        for col in &self.colors {
+            let diff = src.diff(col);
+
+            if diff < best_diff {
+                best_diff = diff;
+                best_col = col;
+            }
+        }
+
+        best_col
+    }
+
+    fn read_pal(filename: &str) -> Vec<Color> {
+        let mut buf = String::new();
+        let mut f = File::open(filename).unwrap();
+
+        f.read_to_string(&mut buf).unwrap();
+
+        const MUL: i32 = (u8::MAX as i32) + 1;
+
+        buf.lines()
+            .map(|line| {
+                let mut rcol = hex::decode(line)
+                    .unwrap()
+                    .into_iter()
+                    .map(Into::<i32>::into);
+
+                Color {
+                    r: rcol.next().unwrap(),
+                    g: rcol.next().unwrap(),
+                    b: rcol.next().unwrap(),
+                } * MUL
+            })
+            .collect()
     }
 }
