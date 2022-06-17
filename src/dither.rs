@@ -1,26 +1,8 @@
-use std::{env, fs::File, io::Read, process::exit};
+use std::{env, fs::File, io::Read};
 
-use crate::color::Color;
+use crate::{color::Color, Image};
 
-const HEADER: [u8; 8] = [102, 97, 114, 98, 102, 101, 108, 100];
-
-pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W) {
-    let mut buffer = [0; 8];
-
-    stdin.read_exact(&mut buffer).unwrap();
-
-    if buffer != HEADER {
-        eprintln!("Wrong header!");
-        exit(1);
-    }
-
-    let mut bwidth = [0; 4];
-    let mut bheight = [0; 4];
-    stdin.read_exact(&mut bwidth).unwrap();
-    stdin.read_exact(&mut bheight).unwrap();
-    let width = u32::from_be_bytes(bwidth) as usize;
-    let height = u32::from_be_bytes(bheight) as usize;
-
+pub fn dither(img: Image) -> Image {
     let argument = env::args().nth(1);
     let pal = match argument {
         Some(filename) => read_pal(&filename),
@@ -40,26 +22,20 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
         }
     };
 
-    let mut out = vec![];
-    let mut raw = Vec::new();
-    stdin.read_to_end(&mut raw).unwrap();
+    let Image {
+        width,
+        height,
+        mut data,
+    } = img;
 
-    let mut data: Vec<_> = raw
-        .chunks_exact(8)
-        .map(|pixel| {
-            let r = u16::from_be_bytes(pixel[0..2].try_into().unwrap()) as i32;
-            let g = u16::from_be_bytes(pixel[2..4].try_into().unwrap()) as i32;
-            let b = u16::from_be_bytes(pixel[4..6].try_into().unwrap()) as i32;
-            Color { r, g, b }
-        })
-        .collect();
+    let mut out = vec![];
 
     for y in 0..height {
         for x in 0..width {
             let i = (y * width + x) as usize;
             let color = &data[i];
-            let closest = closest_color(&pal, color);
-            let diff = *color - *closest;
+            let closest = *closest_color(&pal, color);
+            let diff = *color - closest;
 
             if x < width - 1 {
                 data[i + 1] += (diff * 7) / 16;
@@ -67,33 +43,19 @@ pub fn dither<R: std::io::Read, W: std::io::Write>(stdin: &mut R, stdout: &mut W
 
             if y < height - 1 {
                 if x < width - 1 {
-                    data[i + width + 1] += diff / 16;
+                    data[i + width as usize + 1] += diff / 16;
                 }
                 if x > 0 {
-                    data[i + width - 1] += (diff * 3) / 16;
+                    data[i + width as usize - 1] += (diff * 3) / 16;
                 }
-                data[i + width] += (diff * 5) / 16;
+                data[i + width as usize] += (diff * 5) / 16;
             }
 
             out.push(closest);
         }
     }
 
-    stdout.write_all(&HEADER).unwrap();
-    let ne_width = (width as u32).to_be_bytes();
-    let ne_height = (height as u32).to_be_bytes();
-    stdout.write_all(&ne_width).unwrap();
-    stdout.write_all(&ne_height).unwrap();
-    for v in out {
-        let r = (v.r as u16).to_be_bytes();
-        let g = (v.g as u16).to_be_bytes();
-        let b = (v.b as u16).to_be_bytes();
-        let a = u16::MAX.to_be_bytes();
-        stdout.write_all(&r).unwrap();
-        stdout.write_all(&g).unwrap();
-        stdout.write_all(&b).unwrap();
-        stdout.write_all(&a).unwrap();
-    }
+    Image { data: out, ..img }
 }
 
 fn closest_color<'a>(pal: &'a Vec<Color>, src: &Color) -> &'a Color {

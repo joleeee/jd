@@ -1,10 +1,7 @@
-use std::io::{self, BufWriter};
-
-use jd::dither;
+use std::io;
 
 fn main() {
     let mut stdin = io::stdin();
-    let mut stdout = BufWriter::new(io::stdout());
-
-    dither(&mut stdin, &mut stdout);
+    let mut stdout = io::BufWriter::new(io::stdout());
+    jd::dither_io(&mut stdin, &mut stdout);
 }
