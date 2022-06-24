@@ -1,5 +1,4 @@
 use std::{
-    env::Args,
     fs::File,
     io::Read,
     ops::{AddAssign, Div, Mul, Sub},
@@ -95,14 +94,6 @@ impl Default for Palette {
 }
 
 impl Palette {
-    pub fn from_args(mut args: Args) -> Self {
-        let argument = args.nth(1);
-        match argument {
-            Some(filename) => Self::read_pal(&filename),
-            None => Palette::default(),
-        }
-    }
-
     pub fn closest_color<'a>(self: &'a Palette, src: &Color) -> &'a Color {
         let mut best_diff = f64::MAX;
         let mut best_col = &self.colors[0];
@@ -118,7 +109,7 @@ impl Palette {
         best_col
     }
 
-    fn read_pal(filename: &str) -> Palette {
+    pub fn from_file(filename: &str) -> Self {
         let mut buf = String::new();
         let mut f = File::open(filename).unwrap();
 
