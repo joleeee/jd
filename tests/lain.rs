@@ -4,6 +4,8 @@ use std::{
     process::Command,
 };
 
+use jd::color::Palette;
+
 #[test]
 fn mem() {
     fn ipath(file: &str) -> String {
@@ -16,7 +18,7 @@ fn mem() {
 
     // generate the dither and write to file
     let mut out = File::create(ipath("lain_out.ff")).unwrap();
-    jd::dither_io(&mut Cursor::new(src_ff), &mut out);
+    jd::dither_io(&mut Cursor::new(src_ff), &mut out, &Palette::default());
 
     // read in the solution
     let ans_png = File::open(ipath("lain_ans.png")).unwrap();

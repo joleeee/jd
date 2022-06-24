@@ -75,27 +75,32 @@ pub struct Palette {
     colors: Vec<Color>,
 }
 
+impl Default for Palette {
+    fn default() -> Self {
+        const MAX: i32 = u16::MAX as i32;
+        Self {
+            colors: vec![
+                Color { r: 0, g: 0, b: 0 },
+                Color {
+                    r: MAX,
+                    g: MAX,
+                    b: MAX,
+                },
+                Color { r: MAX, g: 0, b: 0 },
+                Color { r: 0, g: MAX, b: 0 },
+                Color { r: 0, g: 0, b: MAX },
+            ],
+        }
+    }
+}
+
 impl Palette {
     pub fn from_args(mut args: Args) -> Self {
         let argument = args.nth(1);
-        let colors = match argument {
+        match argument {
             Some(filename) => Self::read_pal(&filename),
-            None => {
-                const MAX: i32 = u16::MAX as i32;
-                vec![
-                    Color { r: 0, g: 0, b: 0 },
-                    Color {
-                        r: MAX,
-                        g: MAX,
-                        b: MAX,
-                    },
-                    Color { r: MAX, g: 0, b: 0 },
-                    Color { r: 0, g: MAX, b: 0 },
-                    Color { r: 0, g: 0, b: MAX },
-                ]
-            }
-        };
-        Palette { colors }
+            None => Palette::default(),
+        }
     }
 
     pub fn closest_color<'a>(self: &'a Palette, src: &Color) -> &'a Color {
@@ -113,7 +118,7 @@ impl Palette {
         best_col
     }
 
-    fn read_pal(filename: &str) -> Vec<Color> {
+    fn read_pal(filename: &str) -> Palette {
         let mut buf = String::new();
         let mut f = File::open(filename).unwrap();
 
@@ -121,7 +126,8 @@ impl Palette {
 
         const MUL: i32 = (u8::MAX as i32) + 1;
 
-        buf.lines()
+        let colors = buf
+            .lines()
             .map(|line| {
                 let mut rcol = hex::decode(line)
                     .unwrap()
@@ -134,6 +140,8 @@ impl Palette {
                     b: rcol.next().unwrap(),
                 } * MUL
             })
-            .collect()
+            .collect();
+
+        Self { colors }
     }
 }
