@@ -15,6 +15,6 @@ pub struct Image {
 
 pub fn dither_io<R: io::Read, W: io::Write>(stdin: &mut R, stdout: &mut W, palette: &Palette) {
     let input = ff::decode(stdin).unwrap();
-    let output = dither(input, &palette);
+    let output = dither(input, palette);
     ff::encode(&output, stdout);
 }
