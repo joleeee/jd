@@ -5,4 +5,4 @@ read fardbeld images from stdin, and then write the result to stdout. See the
 test for an example.
 
 ![before](tests/img/lain.jpg)
-![after](tests/img/lain_ans.jpg)
+![after](tests/img/lain_ans.png)
