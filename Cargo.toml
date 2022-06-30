@@ -10,3 +10,10 @@ hex = "0.4.3"
 
 [profile.release]
 debug = 1
+
+[dev-dependencies]
+criterion = "0.3.5"
+
+[[bench]]
+name = "lain_mark"
+harness = false
