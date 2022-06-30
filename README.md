@@ -6,6 +6,7 @@ test for an example.
 
 ![before](tests/img/lain.jpg)
 ![after](tests/img/lain_ans.png)
+![dentaku](benches/img/computer_out-out.png)
 
 ## Usage
 `jd` reads a fardbeld image on stdin and outputs a corresponding dithered farbfeld image on stdout.
