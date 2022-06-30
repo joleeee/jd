@@ -11,23 +11,24 @@ pub fn dither(img: Image, pal: &Palette) -> Image {
 
     for y in 0..height {
         for x in 0..width {
-            let i = (y * width + x) as usize;
-            let color = &data[i];
+            let i = y * width + x;
+            let color = &data[i as usize];
             let closest = *pal.closest_color(color);
             let diff = *color - closest;
 
             if x < width - 1 {
-                data[i + 1] += (diff * 7) / 16;
+                data[i as usize + 1] += (diff * 7) / 16;
             }
 
             if y < height - 1 {
+                let below = (i + width) as usize;
                 if x < width - 1 {
-                    data[i + width as usize + 1] += diff / 16;
+                    data[below + 1] += diff / 16;
                 }
                 if x > 0 {
-                    data[i + width as usize - 1] += (diff * 3) / 16;
+                    data[below - 1] += (diff * 3) / 16;
                 }
-                data[i + width as usize] += (diff * 5) / 16;
+                data[below] += (diff * 5) / 16;
             }
 
             out.push(closest);
