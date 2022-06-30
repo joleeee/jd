@@ -7,6 +7,7 @@ pub use dither::dither;
 
 use std::io;
 
+#[derive(Clone)]
 pub struct Image {
     width: u32,
     height: u32,
