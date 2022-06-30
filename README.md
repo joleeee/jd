@@ -24,4 +24,4 @@ echo -e 'fbbbad\nee8695\n4a7a96\n333f58\n292831' > pal
 
 ## Todo
 * palette generation
-* threaded video dithering [jdv](https://github.com/joleeee/jd/blob/master/jdv)
+* threaded video dithering [jdv](https://github.com/joleeee/jd-c/blob/master/jdv)
