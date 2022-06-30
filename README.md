@@ -1,6 +1,6 @@
-# Jole's Dither implementation
+# jole dither
 
-jd-rs will dither images according to a palette (or the default one). It will
+jd will dither images according to a palette (or the default one). It will
 read fardbeld images from stdin, and then write the result to stdout. See the
 test for an example.
 
