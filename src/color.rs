@@ -4,7 +4,7 @@ use std::{
     ops::{AddAssign, Div, Mul, Sub},
 };
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Color {
     pub r: i32,
     pub g: i32,
