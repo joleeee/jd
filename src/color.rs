@@ -4,6 +4,9 @@ use std::{
     ops::{AddAssign, Div, Mul, Sub},
 };
 
+/// The step in color values
+const COL_STEP: i32 = (u8::MAX as i32) + 1;
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Color {
     pub r: i32,
@@ -115,8 +118,6 @@ impl Palette {
 
         f.read_to_string(&mut buf).unwrap();
 
-        const MUL: i32 = (u8::MAX as i32) + 1;
-
         let colors = buf
             .lines()
             .map(|line| {
@@ -129,7 +130,7 @@ impl Palette {
                     r: rcol.next().unwrap(),
                     g: rcol.next().unwrap(),
                     b: rcol.next().unwrap(),
-                } * MUL
+                } * COL_STEP
             })
             .collect();
 
