@@ -4,11 +4,11 @@ jd will dither images according to a palette (or the default one). It will
 read fardbeld images from stdin, and then write the result to stdout. See the
 test for an example.
 
-![before](tests/img/lain.jpg)
+![before](jd/tests/img/lain.jpg)
 
-![after](tests/img/lain_ans.png)
+![after](jd/tests/img/lain_ans.png)
 
-![dentaku](benches/img/computer_out-out.png)
+![dentaku](jd/benches/img/computer_out-out.png)
 
 ## Usage
 `jd` reads a fardbeld image on stdin and outputs a corresponding dithered farbfeld image on stdout.
