@@ -9,9 +9,9 @@ use std::io;
 
 #[derive(Clone)]
 pub struct Image {
-    width: u32,
-    height: u32,
-    data: Vec<color::Color>,
+    pub width: u32,
+    pub height: u32,
+    pub data: Vec<color::Color>,
 }
 
 pub fn dither_io<R: io::Read, W: io::Write>(stdin: &mut R, stdout: &mut W, palette: &Palette) {
