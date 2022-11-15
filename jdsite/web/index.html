@@ -67,7 +67,8 @@
 
         let list = document.getElementById("colorlist");
         for (const li of list.children) {
-            colors.push(li.children[0].value);
+	    let hex = li.children[0].value.slice(1);
+            colors.push(hex);
         }
 
         return colors;
