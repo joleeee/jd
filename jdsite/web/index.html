@@ -30,6 +30,8 @@
         await init();
     }
 
+    let bytes = undefined;
+
     window.addColor=()=>{
         let list = document.getElementById("colorlist");
 
@@ -42,7 +44,7 @@
         list.appendChild(li);
     }
 
-    window.dither=async (bytes)=>{
+    window.dither=async ()=>{
         let pal = get_colors().join(",");
         let image = document.getElementById("out-img");
 
@@ -62,7 +64,9 @@
         let image = document.getElementById("src-img");
         image.src = URL.createObjectURL(file);
 
-        dither(new Uint8Array(await file.arrayBuffer()));
+        bytes = new Uint8Array(await file.arrayBuffer());
+
+        dither();
     }
 
     function get_colors() {
