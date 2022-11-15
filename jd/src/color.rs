@@ -74,7 +74,7 @@ impl Color {
 }
 
 pub struct Palette {
-    colors: Vec<Color>,
+    pub colors: Vec<Color>,
 }
 
 impl Default for Palette {
