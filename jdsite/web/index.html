@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+        <h1>Dither</h1>
+
+        <div>
+            <img id="src-img">
+            <input id="src" type="file" onchange="load_file(event)">
+        </div>
+
+        <div>
+            <ul id="colorlist">
+                <li> <input type="color" value="#000000"> </li>
+                <li> <input type="color" value="#ffffff"> </li>
+                <li> <input type="color" value="#ff0000"> </li>
+                <li> <input type="color" value="#00ff00"> </li>
+                <li> <input type="color" value="#0000ff"> </li>
+            </ul>
+            <button onclick="addColor()">+</button>
+            <button onclick="dither()">run</button>
+        </div>
+
+<script type="module">
+    import init, { greet, jdither } from "./wasm/jdsite.js";
+
+    const colors = ["#fffff", "#000000"];
+
+    async function run() {
+        await init();
+
+        //greet("Lmao");
+    }
+
+    window.addColor=()=>{
+        let list = document.getElementById("colorlist");
+
+        let element = document.createElement("input");
+        element.setAttribute("type", "color");
+
+        let li = document.createElement("li");
+        li.appendChild(element);
+
+        list.appendChild(li);
+    }
+
+    window.dither=()=>{
+        console.log(get_colors());
+    }
+
+    window.load_file=async (event)=>{
+	let file = event.target.files[0];
+
+        let image = document.getElementById("src-img");
+        image.src = URL.createObjectURL(file);
+
+	let bytes = new Uint8Array(await file.arrayBuffer());
+	let result = jdither(bytes);
+
+	let reader = new FileReader();
+	let blob = new Blob([result.buffer]);
+	reader.readAsDataURL(blob);
+	reader.onloadend = function() {
+		image.src = reader.result;
+	}
+    }
+
+    function get_colors() {
+        let colors = [];
+
+        let list = document.getElementById("colorlist");
+        for (const li of list.children) {
+            colors.push(li.children[0].value);
+        }
+
+        return colors;
+    }
+
+    function update_colors() {
+        let list = document.getElementById("colorlist");
+        list.innerHTML = "";
+
+        for (const c of colors) {
+            let li = document.createElement("li");
+            li.appendChild(document.createTextNode(c));
+
+            list.appendChild(li);
+        }
+    }
+
+    function init_colors() {
+        //update_colors();
+        //let list = document.getElementById("colorlist");
+
+        //let element = document.createElement("li");
+        //element.appendChild(document.createTextNode("colorhere"));
+
+        //list.appendChild(element);
+    }
+
+    init_colors();
+
+    run();
+</script>
+	</body>
+</html>
