@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	</head>
-	<body>
+    <head>
+    </head>
+    <body>
         <h1>Dither</h1>
 
         <div>
@@ -45,23 +45,23 @@
         console.log(get_colors());
         let image = document.getElementById("src-img");
 
-	let result = jdither(bytes);
+        let result = jdither(bytes);
 
-	let reader = new FileReader();
-	let blob = new Blob([result.buffer]);
-	reader.readAsDataURL(blob);
-	reader.onloadend = function() {
-		image.src = reader.result;
-	}
+        let reader = new FileReader();
+        let blob = new Blob([result.buffer]);
+        reader.readAsDataURL(blob);
+        reader.onloadend = function() {
+            image.src = reader.result;
+        }
     }
 
     window.load_file=async (event)=>{
-	let file = event.target.files[0];
+        let file = event.target.files[0];
 
         let image = document.getElementById("src-img");
         image.src = URL.createObjectURL(file);
 
-	dither(new Uint8Array(await file.arrayBuffer()));
+        dither(new Uint8Array(await file.arrayBuffer()));
     }
 
     function get_colors() {
@@ -69,7 +69,7 @@
 
         let list = document.getElementById("colorlist");
         for (const li of list.children) {
-	    let hex = li.children[0].value.slice(1);
+        let hex = li.children[0].value.slice(1);
             colors.push(hex);
         }
 
@@ -90,5 +90,5 @@
 
     run();
 </script>
-	</body>
+    </body>
 </html>
