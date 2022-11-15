@@ -16,9 +16,39 @@ pub fn greet(name: &str) {
     alert(&format!("Sup, {}!", name));
 }
 
+fn color_from_hex(chars: &[u8]) -> Color {
+    fn nibble(c: u8) -> u8 {
+        let c = c as char;
+        match c {
+            '0'..='9' => c as u8 - '0' as u8,
+            'a'..='f' => (c as u8 - 'a' as u8) + 10,
+            _ => 0,
+        }
+    }
+
+    fn channel(c_l: u8, c_r: u8) -> u8 {
+        nibble(c_l) * 16 + nibble(c_r)
+    }
+
+    let r = channel(chars[0], chars[1]);
+    let g = channel(chars[2], chars[3]);
+    let b = channel(chars[4], chars[5]);
+    Color {
+        r: (r as i32) * 256,
+        g: (g as i32) * 256,
+        b: (b as i32) * 256,
+    }
+}
+
 #[wasm_bindgen]
-pub fn jdither(buffer: &[u8]) -> Box<[u8]> {
+pub fn jdither(buffer: &[u8], colors: String) -> Box<[u8]> {
     console_error_panic_hook::set_once();
+
+    let palette: Vec<_> = colors
+        .split(',')
+        .map(|v| color_from_hex(v.as_bytes()))
+        .collect();
+    let palette = jd::color::Palette { colors: palette };
 
     let data = png_decoder::decode(buffer);
 
@@ -43,7 +73,7 @@ pub fn jdither(buffer: &[u8]) -> Box<[u8]> {
                 height: header.height,
                 data: img_data,
             },
-            &jd::color::Palette::default(),
+            &palette,
         );
 
         let img_data: Vec<_> = res
