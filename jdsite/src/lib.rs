@@ -65,8 +65,6 @@ pub fn jdither(buffer: &[u8], colors: String) -> Box<[u8]> {
             })
             .collect();
 
-        alert(&format!("Vec: {:?}", img_data.len()));
-
         let res = jd::dither(
             jd::Image {
                 width: header.width,
