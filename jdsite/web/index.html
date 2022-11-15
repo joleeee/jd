@@ -7,6 +7,7 @@
 
         <div>
             <img id="src-img">
+            <img id="out-img">
             <input id="src" type="file" onchange="load_file(event)">
         </div>
 
@@ -43,7 +44,7 @@
 
     window.dither=async (bytes)=>{
         let pal = get_colors().join(",");
-        let image = document.getElementById("src-img");
+        let image = document.getElementById("out-img");
 
         let result = jdither(bytes, pal);
 
