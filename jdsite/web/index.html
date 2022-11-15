@@ -41,17 +41,10 @@
         list.appendChild(li);
     }
 
-    window.dither=()=>{
+    window.dither=async (bytes)=>{
         console.log(get_colors());
-    }
-
-    window.load_file=async (event)=>{
-	let file = event.target.files[0];
-
         let image = document.getElementById("src-img");
-        image.src = URL.createObjectURL(file);
 
-	let bytes = new Uint8Array(await file.arrayBuffer());
 	let result = jdither(bytes);
 
 	let reader = new FileReader();
@@ -60,6 +53,15 @@
 	reader.onloadend = function() {
 		image.src = reader.result;
 	}
+    }
+
+    window.load_file=async (event)=>{
+	let file = event.target.files[0];
+
+        let image = document.getElementById("src-img");
+        image.src = URL.createObjectURL(file);
+
+	dither(new Uint8Array(await file.arrayBuffer()));
     }
 
     function get_colors() {
