@@ -38,6 +38,8 @@
 
         let element = document.createElement("input");
         element.setAttribute("type", "color");
+        let color = "#" + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+        element.value = color;
 
         let li = document.createElement("li");
         li.appendChild(element);
