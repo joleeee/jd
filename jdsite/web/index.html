@@ -20,6 +20,7 @@
                 <li> <input type="color" value="#0000ff"> </li>
             </ul>
             <button onclick="addColor()">+</button>
+            <button onclick="removeColor()">-</button>
             <button onclick="dither()">run</button>
         </div>
 
@@ -42,6 +43,14 @@
         li.appendChild(element);
 
         list.appendChild(li);
+    }
+
+    window.removeColor=()=>{
+        let list = document.getElementById("colorlist");
+        let child = list.lastElementChild;
+        if (child != undefined) {
+            list.removeChild(list.lastElementChild);
+        }
     }
 
     window.dither=async ()=>{
