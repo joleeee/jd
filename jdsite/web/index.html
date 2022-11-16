@@ -21,6 +21,7 @@
             </ul>
             <button onclick="addColor()">+</button>
             <button onclick="removeColor()">-</button>
+            <button onclick="randomize()">?</button>
             <button onclick="dither()">run</button>
         </div>
 
@@ -33,13 +34,16 @@
 
     let bytes = undefined;
 
+    function rnd_col() {
+        return "#" + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    }
+
     window.addColor=()=>{
         let list = document.getElementById("colorlist");
 
         let element = document.createElement("input");
         element.setAttribute("type", "color");
-        let color = "#" + Math.floor(Math.random() * 0xFFFFFF).toString(16);
-        element.value = color;
+        element.value = rnd_col();
 
         let li = document.createElement("li");
         li.appendChild(element);
@@ -52,6 +56,14 @@
         let child = list.lastElementChild;
         if (child != undefined) {
             list.removeChild(child);
+        }
+    }
+
+    window.randomize=()=>{
+        let list = document.getElementById("colorlist");
+        console.log(list.children);
+        for (let li of list.children) {
+            li.children[0].value = rnd_col();
         }
     }
 
