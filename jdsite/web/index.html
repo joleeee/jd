@@ -6,6 +6,10 @@
     </head>
     <body>
         <h1>Dither</h1>
+
+        <div>
+            <input id="src" type="file" onchange="load_file(event)">
+        </div>
         
         <div class="dither-container">
             <div class="dither-img">
@@ -22,10 +26,11 @@
         </div>
 
         <div>
-            <input id="src" type="file" onchange="load_file(event)">
-        </div>
+            <button onclick="addColor()">+</button>
+            <button onclick="removeColor()">-</button>
+            <button onclick="randomize()">?</button>
+            <button onclick="dither()">run</button>
 
-        <div>
             <ul id="colorlist">
                 <li> <input type="color" value="#000000"> </li>
                 <li> <input type="color" value="#ffffff"> </li>
@@ -33,10 +38,6 @@
                 <li> <input type="color" value="#00ff00"> </li>
                 <li> <input type="color" value="#0000ff"> </li>
             </ul>
-            <button onclick="addColor()">+</button>
-            <button onclick="removeColor()">-</button>
-            <button onclick="randomize()">?</button>
-            <button onclick="dither()">run</button>
         </div>
 
 <script type="module">
