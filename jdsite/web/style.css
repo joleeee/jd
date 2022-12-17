@@ -1,0 +1,19 @@
+.dither-container {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+.dither-img {
+    width: 40vw;
+}
+
+.dither-img > img {
+    width: 100%;
+    height: 100%;
+}
+
+.dither-arrow {
+    text-tra
+}

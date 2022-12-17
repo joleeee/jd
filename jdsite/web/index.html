@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="./style.css">
     </head>
     <body>
         <h1>Dither</h1>
+        
+        <div class="dither-container">
+            <div class="dither-img">
+                <img id="src-img">
+            </div>
+
+            <div class="dither-arrow">
+                &rarr;
+            </div>
+
+            <div class="dither-img">
+                <img id="out-img">
+            </div>
+        </div>
 
         <div>
-            <img id="src-img">
-            <img id="out-img">
             <input id="src" type="file" onchange="load_file(event)">
         </div>
 
