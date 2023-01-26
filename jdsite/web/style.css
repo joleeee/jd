@@ -14,3 +14,7 @@
     height: 100%;
     image-rendering: pixelated;
 }
+
+#out-img {
+    content: var(--cur-img);
+}

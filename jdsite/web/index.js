@@ -54,6 +54,8 @@ window.dither = async () => {
     reader.readAsDataURL(blob);
     reader.onloadend = function () {
         image.src = reader.result;
+        let url = 'url("' + reader.result + '")';
+        document.documentElement.style.setProperty("--cur-img", url);
     }
 }
 
