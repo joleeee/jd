@@ -45,27 +45,28 @@ window.randomize = () => {
 
 window.dither = async () => {
     let pal = get_colors().join(",");
-    let image = document.getElementById("out-img");
-
     let result = jdither(bytes, pal);
 
     let reader = new FileReader();
     let blob = new Blob([result.buffer]);
     reader.readAsDataURL(blob);
     reader.onloadend = function () {
-        image.src = reader.result;
         let url = 'url("' + reader.result + '")';
-        document.documentElement.style.setProperty("--cur-img", url);
+        document.documentElement.style.setProperty("--dithered-img", url);
     }
 }
 
 window.load_file = async (event) => {
     let file = event.target.files[0];
-
-    let image = document.getElementById("src-img");
-    image.src = URL.createObjectURL(file);
-
     bytes = new Uint8Array(await file.arrayBuffer());
+
+    let reader = new FileReader();
+    let blob = new Blob([bytes]);
+    reader.readAsDataURL(blob);
+    reader.onloadend = function () {
+        let url = 'url("' + reader.result + '")';
+        document.documentElement.style.setProperty("--original-img", url);
+    }
 
     dither();
 }

@@ -5,16 +5,19 @@
     display: flex;
 }
 
-.dither-img {
+.dither-container {
     width: 40vw;
+    min-height: 5vh;
 }
 
-.dither-img > img {
+#dither-img {
+    content: var(--dithered-img);
     width: 100%;
     height: 100%;
     image-rendering: pixelated;
 }
 
-#out-img {
-    content: var(--cur-img);
+#dither-img:hover {
+    content: var(--original-img);
+    image-rendering: auto;
 }
