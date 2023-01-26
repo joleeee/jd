@@ -1,3 +1,8 @@
+:root {
+    --original-img: url("https://picsum.photos/200/300");
+    --dithered-img: url("https://picsum.photos/200/300");
+}
+
 .dither-container {
     width: 100%;
     justify-content: space-between;
@@ -17,7 +22,7 @@
     image-rendering: pixelated;
 }
 
-#dither-img:hover {
+#dither-img:active {
     content: var(--original-img);
     image-rendering: auto;
 }
