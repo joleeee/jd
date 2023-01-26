@@ -5,6 +5,8 @@ async function run() {
 }
 
 let bytes = undefined;
+let img_original = undefined;
+let img_dithered = undefined;
 
 function rnd_col() {
     let hex = Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -45,30 +47,39 @@ window.randomize = () => {
 
 window.dither = async () => {
     let pal = get_colors().join(",");
+    let image = document.getElementById("dither-img");
+
     let result = jdither(bytes, pal);
 
     let reader = new FileReader();
     let blob = new Blob([result.buffer]);
     reader.readAsDataURL(blob);
     reader.onloadend = function () {
-        let url = 'url("' + reader.result + '")';
-        document.documentElement.style.setProperty("--dithered-img", url);
+        img_dithered = reader.result;
+        image.src = img_dithered;
     }
 }
 
 window.load_file = async (event) => {
     let file = event.target.files[0];
+    
+    img_original = URL.createObjectURL(file);
+    let image = document.getElementById("dither-img");
+    image.src = img_original;
+
     bytes = new Uint8Array(await file.arrayBuffer());
 
-    let reader = new FileReader();
-    let blob = new Blob([bytes]);
-    reader.readAsDataURL(blob);
-    reader.onloadend = function () {
-        let url = 'url("' + reader.result + '")';
-        document.documentElement.style.setProperty("--original-img", url);
-    }
-
     dither();
+}
+
+window.show = () => {
+    let image = document.getElementById("dither-img");
+    image.src = img_dithered;
+}
+
+window.hide = () => {
+    let image = document.getElementById("dither-img");
+    image.src = img_original;
 }
 
 function get_colors() {
