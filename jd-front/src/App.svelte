@@ -13,6 +13,7 @@
     "#000000",
   ];
 
+  let file_name = undefined;
   let src_file;
 
   let image_dith = undefined;
@@ -39,6 +40,7 @@
   function load_file(event) {
     image_dith = undefined;
     src_file = event.target.files[0];
+    file_name = src_file.name;
 
     image_orig = URL.createObjectURL(src_file);
 
@@ -57,7 +59,14 @@
   <h1>jd</h1>
 
   <div>
-    <input id="src" type="file" accept="image/*" on:change={load_file} />
+    <input
+      id="src"
+      type="file"
+      accept="image/*"
+      on:change={load_file}
+      style="display:none;"
+    />
+    <label for="src">{file_name || "Select Image"}</label>
   </div>
 
   <div class="card">
