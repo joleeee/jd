@@ -2,6 +2,7 @@
 
 members = [
 	"jd",
+	"jdsite"
 ]
 
 [profile.release]

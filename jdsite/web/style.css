@@ -1,0 +1,21 @@
+.dither-container {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+.dither-container {
+    width: 40vw;
+    min-height: 5vh;
+}
+
+#dither-img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+#dither-img:active {
+    image-rendering: auto;
+}
