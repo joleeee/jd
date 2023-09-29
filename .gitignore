@@ -1,2 +1,5 @@
 target/
 tests/img/lain_out.ff
+
+# Local Netlify folder
+.netlify
