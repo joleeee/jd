@@ -2,6 +2,17 @@
   import init, { jdither } from "./wasm/jdsite.js";
   init();
 
+  let colors = [
+    "#ff0000",
+    "#00ff00",
+    "#0000ff",
+    "#ffff00",
+    "#ff00ff",
+    "#00ffff",
+    "#ffffff",
+    "#000000",
+  ];
+
   let src_file;
 
   let image_dith = undefined;
@@ -12,7 +23,7 @@
   $: active_image = image_dith && show_dith ? image_dith : image_orig;
 
   async function dither() {
-    let pal = "ff0000,00ff00,0000ff,ffff00,ff00ff,00ffff,ffffff,000000";
+    let pal = colors.map((c) => c.slice(1)).join(",");
 
     let bytes = new Uint8Array(await src_file.arrayBuffer());
 
@@ -66,9 +77,15 @@
   </div>
 
   <div class="card">
-    <!-- <button onclick="addColor()">+</button>
+    {#each colors as col}
+      <input type="color" bind:value={col} />
+    {/each}
+  </div>
+
+  <!-- <div class="card">
+    <button onclick="addColor()">+</button>
     <button onclick="removeColor()">-</button>
     <button onclick="randomize()">?</button>
-    <button onclick="dither()">run</button> -->
-  </div>
+    <button onclick="dither()">run</button>
+  </div> -->
 </main>
