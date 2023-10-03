@@ -4,6 +4,7 @@
   init();
 
   let colors;
+  $: colors, try_dither();
 
   let file_name = undefined;
   let src_file;
@@ -15,7 +16,15 @@
 
   $: active_image = image_dith && show_dith ? image_dith : image_orig;
 
+  async function try_dither() {
+    if (src_file && dithering_cnt === 0) {
+      dither();
+    }
+  }
+
+  let dithering_cnt = 0;
   async function dither() {
+    dithering_cnt += 1;
     let pal = colors.map((c) => c.slice(1)).join(",");
 
     let bytes = new Uint8Array(await src_file.arrayBuffer());
@@ -27,6 +36,7 @@
     reader.onloadend = function () {
       image_dith = reader.result;
     };
+    dithering_cnt -= 1;
   }
 
   function load_file(event) {
