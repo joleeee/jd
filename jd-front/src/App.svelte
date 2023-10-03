@@ -62,7 +62,7 @@
     <input
       id="src"
       type="file"
-      accept="image/*"
+      accept="image/png"
       on:change={load_file}
       style="display:none;"
     />
