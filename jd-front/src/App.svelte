@@ -78,12 +78,5 @@
     {/if}
   </div>
 
-  <Palette bind:colors />
-
-  <!-- <div class="card">
-    <button onclick="addColor()">+</button>
-    <button onclick="removeColor()">-</button>
-    <button onclick="randomize()">?</button>
-    <button onclick="dither()">run</button>
-  </div> -->
+  <Palette bind:colors on:update={dither} />
 </main>
