@@ -1,17 +1,9 @@
 <script>
+  import Palette from "./lib/Palette.svelte";
   import init, { jdither } from "./wasm/jdsite.js";
   init();
 
-  let colors = [
-    "#ff0000",
-    "#00ff00",
-    "#0000ff",
-    "#ffff00",
-    "#ff00ff",
-    "#00ffff",
-    "#ffffff",
-    "#000000",
-  ];
+  let colors;
 
   let file_name = undefined;
   let src_file;
@@ -86,11 +78,7 @@
     {/if}
   </div>
 
-  <div class="card">
-    {#each colors as col}
-      <input type="color" bind:value={col} />
-    {/each}
-  </div>
+  <Palette bind:colors />
 
   <!-- <div class="card">
     <button onclick="addColor()">+</button>
