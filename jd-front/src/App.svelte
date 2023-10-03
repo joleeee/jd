@@ -66,7 +66,7 @@
       on:change={load_file}
       style="display:none;"
     />
-    <label for="src">{file_name || "Select Image"}</label>
+    <label class="fakeButton" for="src">{file_name || "Select Image"}</label>
   </div>
 
   <div class="card">
