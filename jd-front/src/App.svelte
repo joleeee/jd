@@ -78,6 +78,7 @@
           alt="dithering display"
           on:mousedown={mouse_down}
           on:mouseup={mouse_up}
+          on:mousemove={mouse_up}
         />
       </div>
     {:else}
