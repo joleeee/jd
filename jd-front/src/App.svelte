@@ -78,7 +78,7 @@
         <img
           src={active_image}
           alt="dithering display"
-          on:mousedown={mouse_down}
+          on:mousedown={(event) => (event.button === 0 ? mouse_down() : null)}
           on:mouseup={mouse_up}
           on:mousemove={mouse_up}
         />
