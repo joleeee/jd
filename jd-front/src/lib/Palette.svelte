@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { slide } from "svelte/transition";
   const dispatch = createEventDispatcher();
 
   export let colors = [
@@ -38,9 +39,9 @@
   }
 </script>
 
-<div class="card">
+<div class="card flex-container">
   {#each colors as col}
-    <input type="color" bind:value={col} />
+    <input type="color" bind:value={col} transition:slide={{ axis: "x" }} />
   {/each}
 </div>
 
@@ -49,3 +50,16 @@
   <button on:click={removeColor}>-</button>
   <button on:click={randomizeColors}>?</button>
 </div>
+
+<style>
+  input {
+    height: 2.5em;
+    width: 2.5em;
+    margin: 0.2em;
+  }
+  .flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+</style>
