@@ -40,8 +40,11 @@
   }
 
   function load_file(event) {
-    image_dith = undefined;
     src_file = event.target.files[0];
+    if (!src_file) {
+      return;
+    }
+    image_dith = undefined;
     file_name = src_file.name;
 
     image_orig = URL.createObjectURL(src_file);
